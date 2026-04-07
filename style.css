@@ -1,0 +1,423 @@
+/* ===========================
+   RESET & BASE
+=========================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:          #0b0c10;
+  --surface:     #13151c;
+  --surface-2:   #1c1f2b;
+  --border:      rgba(255,255,255,0.07);
+
+  --num-bg:      #1e2130;
+  --num-hover:   #272b3e;
+  --num-active:  #303550;
+
+  --fn-bg:       #252836;
+  --fn-hover:    #2e3245;
+  --fn-txt:      #a8b0d0;
+
+  --op-bg:       #2b1f4a;
+  --op-hover:    #3a2860;
+  --op-active:   #4a3278;
+  --op-txt:      #c4a8ff;
+  --op-glow:     rgba(160,100,255,0.3);
+
+  --eq-bg:       linear-gradient(135deg, #7c3aed, #a855f7);
+  --eq-hover:    linear-gradient(135deg, #6d28d9, #9333ea);
+  --eq-glow:     rgba(139,92,246,0.5);
+
+  --display-txt: #f0f4ff;
+  --expr-txt:    #5a6080;
+
+  --accent:      #a855f7;
+  --dot:         #22d3a5;
+
+  --radius-card: 28px;
+  --radius-btn:  18px;
+  --radius-eq:   18px;
+
+  --font-display: 'DM Mono', monospace;
+  --font-ui:      'Syne', sans-serif;
+
+  --shadow-card:
+    0 40px 80px rgba(0,0,0,0.6),
+    0 0 0 1px var(--border);
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--display-txt);
+  font-family: var(--font-ui);
+  overflow: hidden;
+}
+
+/* ===========================
+   BACKGROUND ORBS
+=========================== */
+.bg-orbs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.18;
+  animation: drift 18s ease-in-out infinite alternate;
+}
+
+.orb-1 {
+  width: 520px; height: 520px;
+  background: radial-gradient(circle, #7c3aed, transparent 70%);
+  top: -160px; left: -160px;
+  animation-duration: 20s;
+}
+
+.orb-2 {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, #06b6d4, transparent 70%);
+  bottom: -100px; right: -100px;
+  animation-duration: 15s;
+  animation-delay: -6s;
+}
+
+.orb-3 {
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, #22d3a5, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation-duration: 25s;
+  animation-delay: -10s;
+}
+
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(40px, 30px) scale(1.08); }
+}
+
+/* ===========================
+   LAYOUT
+=========================== */
+.wrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 16px;
+}
+
+/* ===========================
+   CARD
+=========================== */
+.calc-card {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+  width: 100%;
+  max-width: 360px;
+  border: 1px solid var(--border);
+  animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ===========================
+   HEADER
+=========================== */
+.calc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 12px;
+}
+
+.calc-label {
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--expr-txt);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 8px var(--dot), 0 0 16px rgba(34,211,165,0.4);
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ===========================
+   DISPLAY
+=========================== */
+.display {
+  background: var(--surface-2);
+  border-radius: 16px;
+  padding: 20px 22px 16px;
+  margin-bottom: 16px;
+  min-height: 104px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.display-expression {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--expr-txt);
+  min-height: 18px;
+  margin-bottom: 6px;
+  letter-spacing: 0.03em;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.display-value {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(36px, 8vw, 52px);
+  color: var(--display-txt);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  word-break: break-all;
+  text-align: right;
+  transition: transform 0.1s ease, opacity 0.15s ease;
+}
+
+.display-value.pop {
+  animation: pop 0.12s ease;
+}
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.display-value.error {
+  color: #ff6b8a;
+  font-size: 28px;
+}
+
+/* ===========================
+   KEYPAD
+=========================== */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+/* ===========================
+   BUTTONS — BASE
+=========================== */
+.btn {
+  font-family: var(--font-ui);
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background 0.15s ease,
+    transform 0.08s ease,
+    box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Ripple */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn:active::after {
+  opacity: 0.06;
+  transition: opacity 0s;
+}
+
+.btn:active {
+  transform: scale(0.93);
+}
+
+/* ===========================
+   BUTTON VARIANTS
+=========================== */
+.btn-num {
+  background: var(--num-bg);
+  color: var(--display-txt);
+  font-size: 20px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.btn-num:hover {
+  background: var(--num-hover);
+}
+
+.btn-num:active {
+  background: var(--num-active);
+}
+
+/* Function buttons (AC, +/−, %) */
+.btn-fn {
+  background: var(--fn-bg);
+  color: var(--fn-txt);
+  font-size: 16px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.btn-fn:hover {
+  background: var(--fn-hover);
+  color: #cdd3f0;
+}
+
+/* Operator buttons */
+.btn-op {
+  background: var(--op-bg);
+  color: var(--op-txt);
+  font-size: 22px;
+  border: 1px solid rgba(160,100,255,0.15);
+}
+
+.btn-op:hover {
+  background: var(--op-hover);
+  box-shadow: 0 0 16px var(--op-glow);
+}
+
+.btn-op:active {
+  background: var(--op-active);
+}
+
+.btn-op.active {
+  background: var(--op-txt);
+  color: #1a0a3a;
+  box-shadow: 0 0 20px var(--op-glow);
+}
+
+/* Zero button */
+.btn-zero {
+  grid-column: span 2;
+  border-radius: var(--radius-btn);
+  justify-content: flex-start;
+  padding-left: 26px;
+}
+
+/* Equals button */
+.btn-eq {
+  background: var(--eq-bg);
+  color: #fff;
+  font-size: 22px;
+  border: none;
+  box-shadow: 0 4px 24px var(--eq-glow);
+}
+
+.btn-eq:hover {
+  background: var(--eq-hover);
+  box-shadow: 0 6px 32px var(--eq-glow);
+}
+
+.btn-eq:active {
+  transform: scale(0.92);
+  box-shadow: 0 2px 12px var(--eq-glow);
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+@media (max-width: 400px) {
+  .calc-card {
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .btn {
+    height: 60px;
+    font-size: 17px;
+    border-radius: 14px;
+  }
+
+  .btn-fn { font-size: 14px; }
+  .btn-op { font-size: 20px; }
+  .btn-eq { font-size: 20px; }
+
+  .keypad { gap: 8px; }
+
+  .display {
+    min-height: 92px;
+    padding: 16px 18px 14px;
+  }
+
+  .display-value {
+    font-size: clamp(32px, 10vw, 44px);
+  }
+}
+
+@media (min-width: 600px) {
+  .calc-card {
+    max-width: 390px;
+    padding: 24px;
+  }
+
+  .btn {
+    height: 74px;
+  }
+
+  .display {
+    min-height: 112px;
+  }
+}
+
+@media (max-height: 700px) {
+  .btn {
+    height: 56px;
+  }
+
+  .display {
+    min-height: 80px;
+    padding: 12px 18px;
+  }
+
+  .keypad { gap: 7px; }
+}
